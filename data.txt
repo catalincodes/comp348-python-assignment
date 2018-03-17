@@ -1,0 +1,3 @@
+such|a|test
+it|is|too
+easy|to|parse
