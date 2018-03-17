@@ -2,11 +2,13 @@
 import socket               
 import readfile
 import sys
-
+import json
 
 dbaseTuple = readfile.loadFile("data.txt")
+print(dbaseTuple)
 # next create a socket object
 exit()
+
 s = socket.socket()         
 print("Socket successfully created")
 

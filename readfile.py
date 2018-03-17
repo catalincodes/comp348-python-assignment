@@ -29,6 +29,5 @@ def loadFile(filename):
                 
     
     dbase_asTuple = tuple(item for item in dbase_asList)
-    print(dbase_asTuple)
     return dbase_asTuple
 

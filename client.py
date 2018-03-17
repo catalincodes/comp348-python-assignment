@@ -1,5 +1,6 @@
 # Import socket module
-import socket               
+import socket
+import json               
 
 # Create a socket object
 s = socket.socket()         
