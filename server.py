@@ -5,9 +5,12 @@ import sys
 import json
 
 dbaseTuple = readfile.loadFile("data.txt")
+jsonPackage = json.dumps({'data':dbaseTuple})
+dataSize = sys.getsizeof(dbaseTuple)
+print(dataSize)
 print(dbaseTuple)
 # next create a socket object
-exit()
+# exit()
 
 s = socket.socket()         
 print("Socket successfully created")
@@ -30,12 +33,16 @@ print("socket is listening")
 
 # a forever loop until we interrupt it or 
 # an error occurs
-while True:
+numConn = 0
+while numConn == 0:
    # Establish connection with client.
    c, addr = s.accept()     
+   numConn = numConn + 1
    print('Got connection from', addr)
 
    # send a thank you message to the client. 
-   c.send('Thank you for connecting'.encode('utf-8'))
+   
+   # c.send('Thank you for connecting'.encode('utf-8'))
+   c.send(jsonPackage.encode('utf-8'))
    # Close the connection with the client
    c.close() 
