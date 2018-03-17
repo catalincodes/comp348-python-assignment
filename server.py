@@ -1,9 +1,12 @@
 # first of all import the socket library
 import socket               
 import readfile
+import sys
+
 
 dbaseTuple = readfile.loadFile("data.txt")
 # next create a socket object
+exit()
 s = socket.socket()         
 print("Socket successfully created")
 
