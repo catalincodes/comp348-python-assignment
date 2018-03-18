@@ -5,6 +5,13 @@
     # TODO: is there a name
     # TODO: are they valid elements ? 
 
+def processListToDict(dbase_asList):
+    dbase_asDict = {}
+    for entry in dbase_asList:
+        dictKey = entry[0]
+        dictValue = [entry[1], entry[2], entry[3]]
+        dbase_asDict[dictKey] = dictValue
+    return dbase_asDict
 
 def loadFile(filename):
     dbase_asList = []
@@ -27,7 +34,6 @@ def loadFile(filename):
                 print('adding ' + tokenized.__str__())
                 dbase_asList.append(tokenized)
                 
-    
-    dbase_asTuple = tuple(item for item in dbase_asList)
-    return dbase_asTuple
+    # dbase_asTuple = tuple(item for item in dbase_asList)
+    return dbase_asList
 

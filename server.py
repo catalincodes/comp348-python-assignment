@@ -1,49 +1,124 @@
-# first of all import the socket library
 import socket               
 import readfile
 import sys
 import json
 
-dbaseTuple = readfile.loadFile("data.txt")
-jsonPackage = json.dumps({'data':dbaseTuple})
-dataSize = sys.getsizeof(dbaseTuple)
+    
+def loadDatabase():
+    dbaseList = readfile.loadFile("data.txt")
+    dbase_asDict = readfile.processListToDict(dbaseList)
+    return dbase_asDict
 
-# next create a socket object
-s = socket.socket()         
-print("Socket successfully created")
+# packing a dbase into JSON
+# jsonPackage = json.dumps({'data':dbaseList})
+# dataSize = sys.getsizeof(dbaseTuple)
 
-# reserve a port on your computer in our
-# case it is 12345 but it can be anything
-port = 9999                
+def executeServerLoop():
+    # create a socket object
+    s = socket.socket()         
+    print("Socket successfully created")
 
-# Next bind to the port
-# we have not typed any ip in the ip field
-# instead we have inputted an empty string
-# this makes the server listen to requests 
-# coming from other computers on the network
-s.bind(('', port))        
-print("socket binded to %s" %(port))
+    # reserve port 9999 
+    port = 9999                
 
-# put the socket into listening mode
-s.listen(5)     
-print("socket is listening")            
+    # bind to the port
+    # we have not typed any ip in the ip field
+    # instead we have inputted an empty string
+    # this makes the server listen to requests 
+    # coming from other computers on the network
+    s.bind(('', port))        
+    print("socket binded to %s" %(port))
 
-# a forever loop until we interrupt it or 
-# an error occurs
-while True:
-   # Establish connection with client.
-   c, addr = s.accept()  
-   print('Got connection from', addr)
-   print('Waiting for command: ...')
+    # put the socket into listening mode
+    s.listen(5)     
+    print("socket is listening")            
 
-   encodedCommand = c.recv(1024)
-   command = encodedCommand.decode('utf-8')
-   print (command)
-   parsedCommand = command.split('|')
-   print (parsedCommand)
-   
-   c.send(('you were looking for : ' + parsedCommand[1]).encode('utf-8'))
-   
-   # c.send(jsonPackage.encode('utf-8'))
-   # Close the connection with the client
-   c.close() 
+    # a forever loop until we interrupt it or 
+    # an error occurs
+    while True:
+        # Establish connection with client.
+        c, addr = s.accept()  
+        print('Got connection from', addr)
+        print('Waiting for command: ...')
+
+        encodedCommand = c.recv(1024)
+        command = encodedCommand.decode('utf-8')
+        print (command)
+        parsedCommand = command.split('|')
+
+        
+        print (parsedCommand)
+        response = processCommand(parsedCommand)
+        
+        c.send(response.encode('utf-8'))
+        
+        # c.send(jsonPackage.encode('utf-8'))
+        # Close the connection with the client
+        c.close() 
+
+def processCommand(newCommand):
+    UNRECONGIZED_COMMAND = 'Unrecognized Command'
+    response = ''
+    
+    if  len(newCommand) == 2 : #it's either find, delete or getAllData
+        print ('****')
+        print(newCommand[0])
+        if newCommand[0] == 'find':
+            print('find')
+            foundEntry = find(newCommand[1])
+            if foundEntry == None:
+                response = 'Server response: ' + newCommand[1] + ' not found in database'
+            else:
+                response = 'Server response: ' +  foundEntry[0] + '|' + foundEntry[1] + '|' + foundEntry[2] + '|' + foundEntry[3]
+        
+        elif newCommand[0] == 'delete':
+            print('delete')
+            response = 'delete'
+        
+        elif newCommand[0] == 'getAllData':
+            print('getAllData')
+            response = 'getAllData'
+        
+        else:
+            response = UNRECONGIZED_COMMAND
+    
+    elif len(newCommand) == 3 :
+        response = UNRECONGIZED_COMMAND
+    
+    elif len(newCommand) == 4 :
+
+        if newCommand[0] == 'update':
+            print('update') 
+            response = 'update'
+        
+        else:
+            response = UNRECONGIZED_COMMAND
+
+    elif len(newCommand) == 5 :
+
+        if newCommand[0] == 'add':
+            print ('add')
+            response = 'add'
+        
+        else:
+            response = UNRECONGIZED_COMMAND
+    
+    else:
+        response = UNRECONGIZED_COMMAND
+
+    return response
+
+def find(name):
+    if name in dbase_asDict:
+        queryDbase = dbase_asDict[name]
+        result = [name, queryDbase[0], queryDbase[1], queryDbase[2]]
+    else:
+        result = None
+    return result
+
+
+dbase_asDict = loadDatabase()
+
+# response = find('John')
+# print(response)
+executeServerLoop()
