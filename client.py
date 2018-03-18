@@ -46,11 +46,12 @@ def displayMainMenu():
 
 def processCommand(userChoice):
     command = ''
-    global isRunning
     if userChoice == 1:
         command = findCommand()
+        sendRequest(command)
     elif userChoice == 2:
         command = addCommand()
+        sendRequest(command)
     elif userChoice == 3:
         command = 'user wants to delete a customer'
     elif userChoice == 4:
@@ -62,14 +63,14 @@ def processCommand(userChoice):
     elif userChoice == 7:
         command = 'user wants to print a report with all the entries'
     elif userChoice == 8:
-        command = 'exit'
-        isRunning = False
-    return command
+        exitCommand()
+    return
         
 def findCommand():
     command = ''
-    clearScreen()
-    print()
+    # clearScreen()
+    print(' * ')
+    print(' * ')
     print(' * * * * * * * * * * * * * * * *')
     print(' * Find customer :             *')
     print(' * * * * * * * * * * * * * * * *')
@@ -83,10 +84,11 @@ def findCommand():
 
 def addCommand():
     command = ''
-    clearScreen()
-    print()
+    # clearScreen()
+    print(' * ')
+    print(' * ')
     print(' * * * * * * * * * * * * * * * *')
-    print(' * Add new customer :             *')
+    print(' * Add new customer :          *')
     print(' * * * * * * * * * * * * * * * *')
 
     name = ''
@@ -113,7 +115,21 @@ def addCommand():
     #(add|<name>|<age>|<address>|<phone>) 
     command = 'add|' + name + '|' + age  + '|' + address + '|' + phoneNr
     return command
-    
+
+# def deleteCommand():
+#    return
+
+# def printCommand():
+
+def exitCommand():
+    global isRunning
+    print (' * ')
+    print (' * ')
+    print (' * ')
+    print (' * * * * * * *')
+    print ('  Good Bye!  *')
+    isRunning = False
+
 def sendRequest(requestedCommand):
     # Create a socket object
     s = socket.socket()         
@@ -131,9 +147,10 @@ def sendRequest(requestedCommand):
     s.send(requestedCommand.encode('utf-8'))
 
     returned = s.recv(1024)
-    returned = returned.decode('utf-8')
+    returned = ' * ' + returned.decode('utf-8')
     print(returned)
-    input("Press Enter to continue...")
+    print(' * ')
+    input(" * Press Enter to continue...")
 
     # receive data from the server
     # receivedJSON = s.recv(1024)
@@ -145,18 +162,9 @@ def sendRequest(requestedCommand):
     s.close()    
 
 def executeProgramLoop():
-
     while isRunning == True:
         userChoice = displayMainMenu()
-        processed = processCommand(userChoice)
-        if processed != 'exit':
-            sendRequest(processed)
-        else:
-            print (' * ')
-            print (' * ')
-            print (' * ')
-            print (' * * * * * * *')
-            print ('  Good Bye!  *')
+        processCommand(userChoice)
 
-    
+
 executeProgramLoop()
