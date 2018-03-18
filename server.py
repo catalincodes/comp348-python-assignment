@@ -7,8 +7,10 @@ import json
 dbaseTuple = readfile.loadFile("data.txt")
 jsonPackage = json.dumps({'data':dbaseTuple})
 dataSize = sys.getsizeof(dbaseTuple)
-print(dataSize)
-print(dbaseTuple)
+
+# print(dataSize)
+# print(dbaseTuple)
+
 # next create a socket object
 # exit()
 
@@ -34,7 +36,7 @@ print("socket is listening")
 # a forever loop until we interrupt it or 
 # an error occurs
 numConn = 0
-while numConn == 0:
+while True:
    # Establish connection with client.
    c, addr = s.accept()     
    numConn = numConn + 1

@@ -1,0 +1,41 @@
+PLAN:
+
+SERVER:
+on start, it reads the data
+goes in an infinite loop, waits for a connection
+if he received a connection, waits for a command
+takes command and breaks it, choosing an option based on the first item
+switchboard
+    (find|<name>)   
+                    --> calls a method, passing database, and the name
+                        --> method attempts to use dictionary to find the data
+                        --> returns a string with the <name|age|address|phone> OR <customer not found>
+                    -->  send back to client the encoded string
+    (add|<name>|<age>|<address>|<phone>) 
+                    --> calls a method, providing dbase, name, age, address and phone
+                        --> method attempts to check if it already exists (if yes, return "Customer already exists")
+                        --> if new client, create a new dictionary entry and return "Customer has been added"
+                    --> send back to client either solution
+    (delete|name)
+                    --> calls a method, providing dbase and name
+                        --> method attempts to check if it exists (if no, return "Customer not found")
+                        --> if found, delete dictionary entry and return "Customer has been deleted"
+                    --> send back to client either solution 
+    (update|name|field|<value>)
+                    --> gets the field(2) to use correct method
+                    --> calls the correct method, providing dbase, name and new value
+                        --> method attempts to check if it exists (if no, return "Customer not found")
+                        --> if found, updates the field and returns "Customer's <field> has been updated"
+                    --> sends back to client either solution
+    (getAllData|) --> compiles the data, sends it to client
+
+CLIENT:
+print all options, wait for choice
+switchboard
+    (findCustomer) --> sends "find|<name>", waits for reply, decode it and display it 
+    (addCustomer) --> gets all info [name, age, address, phone] and sends it as "add|name|age|address|phone"
+    (deleteCustomer) --> gets name, and sends (delete|name)
+    (updateAge) --> gets name and new age, and sends (update|name|age|newAge)
+    (updateAddress) --> gets name and new address, and sends (update|name|address|newAddress)
+    (updatePhone) --> gets name and new phone number, and sends (update|name|phone|newPhoneNumber)
+    (printData) --> sends (getAllData), process it into a list, and then display it line-by-line

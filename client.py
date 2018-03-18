@@ -12,8 +12,10 @@ port = 9999
 s.connect(('127.0.0.1', port))
 
 # receive data from the server
-data = s.recv(1024)
-data = data.decode('utf-8')
-print(data)
+receivedJSON = s.recv(1024)
+receivedJSON = receivedJSON.decode('utf-8')
+dataDictionary = json.loads(receivedJSON)
+data = dataDictionary["data"]
+print(data[0][0])
 # close the connection
 s.close()    
