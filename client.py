@@ -2,6 +2,10 @@
 import socket
 import json
 import os
+import time
+
+isRunning = True
+
 
 def clearScreen():
     if os.name is 'nt':
@@ -42,6 +46,7 @@ def displayMainMenu():
 
 def processCommand(userChoice):
     command = ''
+    global isRunning
     if userChoice is 1:
         command = findCommand()
     elif userChoice is 2:
@@ -57,8 +62,8 @@ def processCommand(userChoice):
     elif userChoice is 7:
         command = 'user wants to print a report with all the entries'
     elif userChoice is 8:
-        command = 'user wants to exit'
-    print(command)
+        command = 'exit'
+        isRunning = False
     return command
         
 def findCommand():
@@ -76,34 +81,49 @@ def findCommand():
     command = 'find|' + name
     return command 
 
-# Create a socket object
-s = socket.socket()         
+def sendRequest(requestedCommand):
+    # Create a socket object
+    s = socket.socket()         
 
-# Define the port on which you want to connect
-port = 9999             
+    # Define the port on which you want to connect
+    port = 9999             
 
-userChoice = displayMainMenu()
-processed = processCommand(userChoice)
-print(processed)
-
-# command = 'find|john'
+    # command = 'find|john'
 
 
-# connect to the server on local computer
-s.connect(('127.0.0.1', port))
+    # connect to the server on local computer
+    s.connect(('127.0.0.1', port))
 
-#send command
-s.send(processed.encode('utf-8'))
+    #send command
+    s.send(requestedCommand.encode('utf-8'))
 
-returned = s.recv(1024)
-returned = returned.decode('utf-8')
-print(returned)
+    returned = s.recv(1024)
+    returned = returned.decode('utf-8')
+    print(returned)
+    input("Press Enter to continue...")
 
-# receive data from the server
-# receivedJSON = s.recv(1024)
-# receivedJSON = receivedJSON.decode('utf-8')
-# dataDictionary = json.loads(receivedJSON)
-# data = dataDictionary["data"]
-# print(data[0][0])
-# close the connection
-s.close()    
+    # receive data from the server
+    # receivedJSON = s.recv(1024)
+    # receivedJSON = receivedJSON.decode('utf-8')
+    # dataDictionary = json.loads(receivedJSON)
+    # data = dataDictionary["data"]
+    # print(data[0][0])
+    # close the connection
+    s.close()    
+
+def executeProgramLoop():
+
+    while isRunning == True:
+        userChoice = displayMainMenu()
+        processed = processCommand(userChoice)
+        if processed != 'exit':
+            sendRequest(processed)
+        else:
+            print (' * ')
+            print (' * ')
+            print (' * ')
+            print (' * * * * * * *')
+            print ('  Good Bye!  *')
+
+    
+executeProgramLoop()
