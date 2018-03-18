@@ -47,21 +47,21 @@ def displayMainMenu():
 def processCommand(userChoice):
     command = ''
     global isRunning
-    if userChoice is 1:
+    if userChoice == 1:
         command = findCommand()
-    elif userChoice is 2:
-        command = 'user wants to add a customer'
-    elif userChoice is 3:
+    elif userChoice == 2:
+        command = addCommand()
+    elif userChoice == 3:
         command = 'user wants to delete a customer'
-    elif userChoice is 4:
+    elif userChoice == 4:
         command = 'user wants to update a customer\'s age'
-    elif userChoice is 5:
+    elif userChoice == 5:
         command = 'user wants to update a customer\'s address'
-    elif userChoice is 6:
+    elif userChoice == 6:
         command = 'user wants to update a customer\'s phone number'
-    elif userChoice is 7:
+    elif userChoice == 7:
         command = 'user wants to print a report with all the entries'
-    elif userChoice is 8:
+    elif userChoice == 8:
         command = 'exit'
         isRunning = False
     return command
@@ -76,11 +76,44 @@ def findCommand():
     name = ''
     while name == '':
         name = input(' * Name: ')
-        if name is '':
+        if name == '':
             print(' * You must provide a name, please try again')
     command = 'find|' + name
     return command 
 
+def addCommand():
+    command = ''
+    clearScreen()
+    print()
+    print(' * * * * * * * * * * * * * * * *')
+    print(' * Add new customer :             *')
+    print(' * * * * * * * * * * * * * * * *')
+
+    name = ''
+    while name == '':
+        name = input(' * Enter name: ')
+        if name == '':
+            print(' * You must provide a name. Please try again')
+    age = ''
+    while age == '':
+        age = input(' * Enter age: ')
+        if age == '' or age.isnumeric == False:
+            print(' * You must provide a valid age. Please try again')
+    address = ''
+    while address == '':
+        address = input(' * Enter address: ')
+        if address == '':
+            print(' * You must provide a valid address. Please try again')
+    phoneNr = ''
+    while phoneNr == '':
+        phoneNr = input(' * Enter phone number: ')
+        if phoneNr == '':
+            print(' * You must provide a valid phone number. Please try again')
+    
+    #(add|<name>|<age>|<address>|<phone>) 
+    command = 'add|' + name + '|' + age  + '|' + address + '|' + phoneNr
+    return command
+    
 def sendRequest(requestedCommand):
     # Create a socket object
     s = socket.socket()         

@@ -64,7 +64,6 @@ def processCommand(newCommand):
         print ('****')
         print(newCommand[0])
         if newCommand[0] == 'find':
-            print('find')
             foundEntry = find(newCommand[1])
             if foundEntry == None:
                 response = 'Server response: ' + newCommand[1] + ' not found in database'
@@ -97,8 +96,7 @@ def processCommand(newCommand):
     elif len(newCommand) == 5 :
 
         if newCommand[0] == 'add':
-            print ('add')
-            response = 'add'
+            response = add(newCommand[1], newCommand[2], newCommand[3], newCommand[4])
         
         else:
             response = UNRECONGIZED_COMMAND
@@ -116,6 +114,15 @@ def find(name):
         result = None
     return result
 
+def add(name, age, address, phoneNumber):
+    global dbase_asDict
+    if name in dbase_asDict:
+        result = 'Customer already exists.'
+    else:
+        dbase_asDict[name] = [age, address, phoneNumber]
+        result = 'Customer has been added!'
+    return result
+    
 
 dbase_asDict = loadDatabase()
 
