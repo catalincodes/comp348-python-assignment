@@ -59,7 +59,7 @@ def processCommand(userChoice):
     elif userChoice is 8:
         command = 'user wants to exit'
     print(command)
-    return
+    return command
         
 def findCommand():
     command = ''
@@ -83,15 +83,17 @@ s = socket.socket()
 port = 9999             
 
 userChoice = displayMainMenu()
-print(processCommand(userChoice))
-command = 'find|john'
+processed = processCommand(userChoice)
+print(processed)
+
+# command = 'find|john'
 
 
 # connect to the server on local computer
 s.connect(('127.0.0.1', port))
 
 #send command
-s.send(command.encode('utf-8'))
+s.send(processed.encode('utf-8'))
 
 returned = s.recv(1024)
 returned = returned.decode('utf-8')
