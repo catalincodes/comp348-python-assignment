@@ -30,19 +30,29 @@ def loadFile(filename):
             # remove trailing spaces
             for item in tokenized:
                 item.strip()
+            
+            try:
+                age = int(tokenized[1])
+            except ValueError:
+                print("The following entry does not have a valid age:")
+                print(line)
+                continue
+
+            age = int(tokenized[1])                     
 
             #remove invalid entries
             if (len(tokenized) != 4): 
-                print("The following entry with more than 4 columns was rejected:")
-                print(tokenized)
+                print("The following entry with more than 4 columns was rejected for being over-zealous:")
+                print(line)
                 continue
             elif (tokenized[0] == ''):
                 print("The following entry does not have a valid name:")
-                print(tokenized)
+                print(line)
                 continue
-            elif (tokenized[1].isnumeric() == False):
-                print("The following entry does not have a valid age:")
-                print(tokenized)
+            elif (age < 0 or age > 199 ):
+                print("The following entry does not fit a valid age range.")
+                print("I mean really ... you cannot be under 0 years of age or over 200 years old.")
+                print(line)
                 continue
             else:
                 # print('adding ' + tokenized.__str__())

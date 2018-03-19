@@ -2,7 +2,9 @@ import socket
 import readfile
 import sys
 import json
+import time
 
+# References: boiler-plate code for connection to server 
     
 def loadDatabase():
     dbaseList = readfile.loadFile("data.txt")
@@ -16,18 +18,12 @@ def loadDatabase():
 def executeServerLoop():
     # create a socket object
     s = socket.socket()         
-    # print("Socket successfully created")
 
     # reserve port 9999 
     port = 9999                
 
     # bind to the port
-    # we have not typed any ip in the ip field
-    # instead we have inputted an empty string
-    # this makes the server listen to requests 
-    # coming from other computers on the network
     s.bind(('', port))        
-    # print("socket binded to %s" %(port))
 
     # put the socket into listening mode
     s.listen(5)     
@@ -35,6 +31,9 @@ def executeServerLoop():
 
     # a forever loop until we interrupt it or 
     # an error occurs
+
+    print("Server is listening for commands: ")
+
     while True:
         # Establish connection with client.
         c, _ = s.accept()  
@@ -62,6 +61,7 @@ def processCommand(newCommand):
     
     if  len(newCommand) == 2 : #it's either find, delete or getAllData
         if newCommand[0] == 'find':
+            print(str(time.ctime()) + ' - ' + 'Find command')
             foundEntry = find(newCommand[1])
             if foundEntry == None:
                 response = 'Server response: ' + newCommand[1] + ' not found in database'
@@ -69,43 +69,54 @@ def processCommand(newCommand):
                 response = 'Server response: ' +  foundEntry[0] + '|' + foundEntry[1] + '|' + foundEntry[2] + '|' + foundEntry[3]
         
         elif newCommand[0] == 'delete':
+            print(str(time.ctime()) + ' - ' + 'Delete command')
             response = delete(newCommand[1])
         
         elif newCommand[0] == 'getAllData':
-            # print('getAllData')
+            print(str(time.ctime()) + ' - ' + 'GetAllData command')
             response = json.dumps({'data':dbase_asDict})
             # response = jsonPackage.encode('utf-8')
         
         else:
+            print(str(time.ctime()) + ' - ' + 'Unknown command')
             response = UNRECONGIZED_COMMAND
     
     elif len(newCommand) == 3 :
+        print(str(time.ctime()) + ' - ' + 'Unknown command')
         response = UNRECONGIZED_COMMAND
     
     elif len(newCommand) == 4 :
 
         if newCommand[0] == 'update':
             if (newCommand[2] == 'age'):
+                print(str(time.ctime()) + ' - ' + 'Update age command')
                 response = updateAge(newCommand[1], newCommand[3])
             elif (newCommand[2] == 'address'):
+                print(str(time.ctime()) + ' - ' + 'Update address command')
                 response = updateAddress(newCommand[1], newCommand[3])
             elif (newCommand[2] == 'phone'):
+                print(str(time.ctime()) + ' - ' + 'Update phone number command')
                 response = updatePhone(newCommand[1], newCommand[3])
             else:
+                print(str(time.ctime()) + ' - ' + 'Unknown command')
                 response = UNRECONGIZED_COMMAND
         
         else:
+            print(str(time.ctime()) + ' - ' + 'Unknown command')
             response = UNRECONGIZED_COMMAND
 
     elif len(newCommand) == 5 :
 
         if newCommand[0] == 'add':
+            print(str(time.ctime()) + ' - ' + 'Add new customer command')
             response = add(newCommand[1], newCommand[2], newCommand[3], newCommand[4])
         
         else:
+            print(str(time.ctime()) + ' - ' + 'Unknown command')
             response = UNRECONGIZED_COMMAND
     
     else:
+        print(str(time.ctime()) + ' - ' + 'Unknown command')
         response = UNRECONGIZED_COMMAND
 
     return response
