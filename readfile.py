@@ -39,9 +39,11 @@ def loadFile(filename):
             elif (tokenized[0] == ''):
                 print("The following entry does not have a valid name:")
                 print(tokenized)
+                continue
             elif (tokenized[1].isnumeric() == False):
                 print("The following entry does not have a valid age:")
                 print(tokenized)
+                continue
             else:
                 # print('adding ' + tokenized.__str__())
                 dbase_asList.append(tokenized)
