@@ -61,6 +61,9 @@ def processCommand(userChoice):
     elif userChoice == 6:
         command = 'user wants to update a customer\'s phone number'
     elif userChoice == 7:
+        dbase_asDict = getAllData()
+        print (type(dbase_asDict))
+        printCommand(dbase_asDict)
         command = 'user wants to print a report with all the entries'
     elif userChoice == 8:
         exitCommand()
@@ -119,7 +122,100 @@ def addCommand():
 # def deleteCommand():
 #    return
 
-# def printCommand():
+def getAllData():
+    # Create a socket object
+    s = socket.socket()         
+
+    # Define the port on which you want to connect
+    port = 9999  
+
+    # connect to the server on local computer
+    s.connect(('127.0.0.1', port))
+
+    #send command
+    s.send('getAllData|'.encode('utf-8'))
+
+    receivedJSON = s.recv(1024)
+    receivedJSON = receivedJSON.decode('utf-8')
+    unpackedJSON = json.loads(receivedJSON)
+    data = unpackedJSON["data"]
+    return data
+
+def generateTable(dbase_asDict):
+    table = list()
+    for myKey in dbase_asDict.keys():
+        value = dbase_asDict[myKey]
+        newLine = [myKey, value[0], value[1], value[2]]
+        table.append(newLine)
+    return table
+
+def computeColSizes(table):
+    colSizes = list()
+    for i in range(0, len(table[0])):
+        max = 0
+        for j in range(0, len(table)):
+
+            if ( len( table[j][i] ) > max ):
+                max = len(table[j][i])
+        colSizes.append(max+1)
+    return colSizes
+
+def computeRowSize(colSizes):
+    rowSize = 0
+    for currentRow in colSizes:
+        rowSize = rowSize + currentRow
+    return rowSize + 9
+
+
+def printCommand(dbase_asDict):
+    table = generateTable(dbase_asDict)
+    colSizes = computeColSizes(table)
+    rowSize = computeRowSize(colSizes)
+    
+    clearScreen()
+
+    print('/', end='', flush=True)
+    for _ in range(rowSize-2):
+        print('-', end='', flush=True)
+    print("\\")
+
+
+    print('|', end='', flush=True)
+    print('Name'.center(colSizes[0]), end='', flush=True)
+    print(' |', end='', flush=True)
+    print(' Age'.center(colSizes[1]), end='', flush=True)
+    print(' |', end='', flush=True)
+    print('Address'.center(colSizes[2]), end='', flush=True)
+    print(' |', end='', flush=True)
+    print('Phone #'.center(colSizes[3]), end='', flush=True)
+    print(' |')
+
+    print('|', end='', flush=True)
+    for _ in range(rowSize-2):
+        print('-', end='', flush=True)
+    print("|")
+
+
+    for i in range(0, len(table)):
+        print('|', end='', flush=True)
+        print(table[i][0].rjust(colSizes[0]), end='', flush=True)
+        print(' |', end='', flush=True)
+        print(table[i][1].rjust(colSizes[1]), end='', flush=True)
+        print(' |', end='', flush=True)
+        print(table[i][2].rjust(colSizes[2]), end='', flush=True)
+        print(' |', end='', flush=True)
+        print(table[i][3].rjust(colSizes[3]), end='', flush=True)
+        print(' |')
+
+    print("\\", end='', flush=True)
+    for _ in range(rowSize-2):
+        print('-', end='', flush=True)
+    print("/")
+    print('')
+    input(" Press Enter to continue...")
+
+    #print(rowSize) 
+    
 
 def exitCommand():
     global isRunning
@@ -137,9 +233,6 @@ def sendRequest(requestedCommand):
     # Define the port on which you want to connect
     port = 9999             
 
-    # command = 'find|john'
-
-
     # connect to the server on local computer
     s.connect(('127.0.0.1', port))
 
@@ -153,9 +246,7 @@ def sendRequest(requestedCommand):
     input(" * Press Enter to continue...")
 
     # receive data from the server
-    # receivedJSON = s.recv(1024)
-    # receivedJSON = receivedJSON.decode('utf-8')
-    # dataDictionary = json.loads(receivedJSON)
+    
     # data = dataDictionary["data"]
     # print(data[0][0])
     # close the connection
@@ -166,5 +257,7 @@ def executeProgramLoop():
         userChoice = displayMainMenu()
         processCommand(userChoice)
 
+#dbase_asDict = getAllData()
+#printCommand(dbase_asDict)
 
 executeProgramLoop()

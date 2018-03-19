@@ -10,7 +10,7 @@ def loadDatabase():
     return dbase_asDict
 
 # packing a dbase into JSON
-# jsonPackage = json.dumps({'data':dbaseList})
+
 # dataSize = sys.getsizeof(dbaseTuple)
 
 def executeServerLoop():
@@ -76,7 +76,8 @@ def processCommand(newCommand):
         
         elif newCommand[0] == 'getAllData':
             print('getAllData')
-            response = 'getAllData'
+            response = json.dumps({'data':dbase_asDict})
+            # response = jsonPackage.encode('utf-8')
         
         else:
             response = UNRECONGIZED_COMMAND
