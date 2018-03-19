@@ -53,13 +53,17 @@ def processCommand(userChoice):
         command = addCommand()
         sendRequest(command)
     elif userChoice == 3:
-        command = 'user wants to delete a customer'
+        command = deleteCommand()
+        sendRequest(command)
     elif userChoice == 4:
-        command = 'user wants to update a customer\'s age'
+        command = updateAge()
+        sendRequest(command)
     elif userChoice == 5:
-        command = 'user wants to update a customer\'s address'
+        command = updateAddress()
+        sendRequest(command)
     elif userChoice == 6:
-        command = 'user wants to update a customer\'s phone number'
+        command = updatePhoneNr()
+        sendRequest(command)
     elif userChoice == 7:
         dbase_asDict = getAllData()
         print (type(dbase_asDict))
@@ -71,11 +75,10 @@ def processCommand(userChoice):
         
 def findCommand():
     command = ''
-    # clearScreen()
     print(' * ')
     print(' * ')
     print(' * * * * * * * * * * * * * * * *')
-    print(' * Find customer :             *')
+    print(' * Find customer               *')
     print(' * * * * * * * * * * * * * * * *')
     name = ''
     while name == '':
@@ -91,7 +94,7 @@ def addCommand():
     print(' * ')
     print(' * ')
     print(' * * * * * * * * * * * * * * * *')
-    print(' * Add new customer :          *')
+    print(' * Add new customer            *')
     print(' * * * * * * * * * * * * * * * *')
 
     name = ''
@@ -119,8 +122,83 @@ def addCommand():
     command = 'add|' + name + '|' + age  + '|' + address + '|' + phoneNr
     return command
 
-# def deleteCommand():
-#    return
+def deleteCommand():
+    command = ''
+    print(' * ')
+    print(' * ')
+    print(' * * * * * * * * * * * * * * * *')
+    print(' * Delete customer             *')
+    print(' * * * * * * * * * * * * * * * *')
+    name = ''
+    while name == '':
+        name = input(' * Name: ')
+        if name == '':
+            print(' * You must provide a name, please try again')
+    command = 'delete|' + name
+    return command 
+
+def updateAge():
+    command = ''
+    print(' * ')
+    print(' * ')
+    print(' * * * * * * * * * * * * * * * *')
+    print(' * Update age of a customer    *')
+    print(' * * * * * * * * * * * * * * * *')
+    name = ''
+    while name == '':
+        name = input(' * Name: ')
+        if name == '':
+            print(' * You must provide a name, please try again')
+    age = ''
+    while age == '':
+        age = input(' * Enter age: ')
+        if age == '' or age.isnumeric == False:
+            print(' * You must provide a valid age. Please try again')
+    
+    command = 'update|' + name + '|age|' + age
+    return command 
+
+def updateAddress():
+    command = ''
+    print(' * ')
+    print(' * ')
+    print(' * * * * * * * * * * * * * * * * *')
+    print(' * Update address of a customer  *')
+    print(' * * * * * * * * * * * * * * * * *')
+    name = ''
+    while name == '':
+        name = input(' * Name: ')
+        if name == '':
+            print(' * You must provide a name, please try again')
+    address = ''
+    while address == '':
+        address = input(' * Enter address: ')
+        if address == '':
+            print(' * You must provide a valid address. Please try again')
+
+    command = 'update|' + name + '|address|' + address
+    return command 
+
+def updatePhoneNr():
+    command = ''
+    print(' * ')
+    print(' * ')
+    print(' * * * * * * * * * * * * * * * * *')
+    print(' * Update phone # of a customer  *')
+    print(' * * * * * * * * * * * * * * * * *')
+    name = ''
+    while name == '':
+        name = input(' * Name: ')
+        if name == '':
+            print(' * You must provide a name, please try again')
+    phone = ''
+    while phone == '':
+        phone = input(' * Enter phone number: ')
+        if phone == '':
+            print(' * You must provide a valid phone number. Please try again')
+
+    command = 'update|' + name + '|phone|' + phone
+    return command 
 
 def getAllData():
     # Create a socket object
@@ -165,7 +243,6 @@ def computeRowSize(colSizes):
     for currentRow in colSizes:
         rowSize = rowSize + currentRow
     return rowSize + 9
-
 
 def printCommand(dbase_asDict):
     table = generateTable(dbase_asDict)
@@ -216,7 +293,6 @@ def printCommand(dbase_asDict):
 
     #print(rowSize) 
     
-
 def exitCommand():
     global isRunning
     print (' * ')

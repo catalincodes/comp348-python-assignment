@@ -16,7 +16,7 @@ def loadDatabase():
 def executeServerLoop():
     # create a socket object
     s = socket.socket()         
-    print("Socket successfully created")
+    # print("Socket successfully created")
 
     # reserve port 9999 
     port = 9999                
@@ -27,27 +27,27 @@ def executeServerLoop():
     # this makes the server listen to requests 
     # coming from other computers on the network
     s.bind(('', port))        
-    print("socket binded to %s" %(port))
+    # print("socket binded to %s" %(port))
 
     # put the socket into listening mode
     s.listen(5)     
-    print("socket is listening")            
+    # print("socket is listening")            
 
     # a forever loop until we interrupt it or 
     # an error occurs
     while True:
         # Establish connection with client.
-        c, addr = s.accept()  
-        print('Got connection from', addr)
-        print('Waiting for command: ...')
+        c, _ = s.accept()  
+        # print('Got connection from', addr)
+        # print('Waiting for command: ...')
 
         encodedCommand = c.recv(1024)
         command = encodedCommand.decode('utf-8')
-        print (command)
+        # print (command)
         parsedCommand = command.split('|')
 
         
-        print (parsedCommand)
+        # print (parsedCommand)
         response = processCommand(parsedCommand)
         
         c.send(response.encode('utf-8'))
@@ -61,8 +61,6 @@ def processCommand(newCommand):
     response = ''
     
     if  len(newCommand) == 2 : #it's either find, delete or getAllData
-        print ('****')
-        print(newCommand[0])
         if newCommand[0] == 'find':
             foundEntry = find(newCommand[1])
             if foundEntry == None:
@@ -71,11 +69,10 @@ def processCommand(newCommand):
                 response = 'Server response: ' +  foundEntry[0] + '|' + foundEntry[1] + '|' + foundEntry[2] + '|' + foundEntry[3]
         
         elif newCommand[0] == 'delete':
-            print('delete')
-            response = 'delete'
+            response = delete(newCommand[1])
         
         elif newCommand[0] == 'getAllData':
-            print('getAllData')
+            # print('getAllData')
             response = json.dumps({'data':dbase_asDict})
             # response = jsonPackage.encode('utf-8')
         
@@ -88,8 +85,14 @@ def processCommand(newCommand):
     elif len(newCommand) == 4 :
 
         if newCommand[0] == 'update':
-            print('update') 
-            response = 'update'
+            if (newCommand[2] == 'age'):
+                response = updateAge(newCommand[1], newCommand[3])
+            elif (newCommand[2] == 'address'):
+                response = updateAddress(newCommand[1], newCommand[3])
+            elif (newCommand[2] == 'phone'):
+                response = updatePhone(newCommand[1], newCommand[3])
+            else:
+                response = UNRECONGIZED_COMMAND
         
         else:
             response = UNRECONGIZED_COMMAND
@@ -124,9 +127,47 @@ def add(name, age, address, phoneNumber):
         result = 'Customer has been added!'
     return result
     
+def delete(name):
+    global dbase_asDict
+    if name in dbase_asDict:
+        dbase_asDict.pop(name, None)
+        result = "Customer was removed!"
+    else:
+        result = "Customer not found."
+    return result
+
+def updateAge(name, age):
+    global dbase_asDict
+    if name in dbase_asDict:
+        origEntry = dbase_asDict[name]
+        newEntry = [age, origEntry[1], origEntry[2]]
+        dbase_asDict[name] = newEntry
+        result = "Customer age was updated!"
+    else:
+        result = "Customer not found."
+    return result
+
+def updateAddress(name, address):
+    global dbase_asDict
+    if name in dbase_asDict:
+        origEntry = dbase_asDict[name]
+        newEntry = [origEntry[0], address, origEntry[2]]
+        dbase_asDict[name] = newEntry
+        result = "Customer\'s address was updated!"
+    else:
+        result = "Customer not found."
+    return result
+
+def updatePhone(name, phone):
+    global dbase_asDict
+    if name in dbase_asDict:
+        origEntry = dbase_asDict[name]
+        newEntry = [origEntry[0], origEntry[1], phone]
+        dbase_asDict[name] = newEntry
+        result = "Customer\'s phone number was updated!"
+    else:
+        result = "Customer not found."
+    return result
 
 dbase_asDict = loadDatabase()
-
-# response = find('John')
-# print(response)
 executeServerLoop()

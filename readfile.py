@@ -16,22 +16,24 @@ def processListToDict(dbase_asList):
 def loadFile(filename):
     dbase_asList = []
     with open(filename, "r") as file:
+        print('Reading file.')
         completeFile = file.readlines()
+        print('Processing file.')
         for line in completeFile:
             tokenized = line.split('|') 
-            
             
             #remove '\n' from last entries 
             lastItem = tokenized[len(tokenized) - 1]
             if (lastItem[-1:] is '\n'):
                 tokenized[len(tokenized) - 1] = lastItem[:-1]
-            if (len(tokenized) is not 4): 
-                print(len(tokenized))
+            
+            #remove invalid entries
+            if (len(tokenized) != 4): 
+                print("The following entry with more than 4 columns was rejected :")
                 print(tokenized)
-                print("it is not 4, therefore it ain't good")
                 continue
             else:
-                print('adding ' + tokenized.__str__())
+                # print('adding ' + tokenized.__str__())
                 dbase_asList.append(tokenized)
                 
     # dbase_asTuple = tuple(item for item in dbase_asList)
