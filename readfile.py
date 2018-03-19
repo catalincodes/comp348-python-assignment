@@ -27,11 +27,21 @@ def loadFile(filename):
             if (lastItem[-1:] is '\n'):
                 tokenized[len(tokenized) - 1] = lastItem[:-1]
             
+            # remove trailing spaces
+            for item in tokenized:
+                item.strip()
+
             #remove invalid entries
             if (len(tokenized) != 4): 
-                print("The following entry with more than 4 columns was rejected :")
+                print("The following entry with more than 4 columns was rejected:")
                 print(tokenized)
                 continue
+            elif (tokenized[0] == ''):
+                print("The following entry does not have a valid name:")
+                print(tokenized)
+            elif (tokenized[1].isnumeric() == False):
+                print("The following entry does not have a valid age:")
+                print(tokenized)
             else:
                 # print('adding ' + tokenized.__str__())
                 dbase_asList.append(tokenized)
